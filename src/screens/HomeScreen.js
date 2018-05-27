@@ -2,8 +2,10 @@
  * Created by remypeyre on 26/05/2018.
  */
 
-import React, { Component } from "react";
-import { StyleSheet, Text, Button, View } from "react-native";
+import React, { Component } from 'react'
+import { StyleSheet, Text, Button, View } from 'react-native'
+
+import { restGet } from '../services/api'
 
 const styles = StyleSheet.create({
     container: {
@@ -22,22 +24,27 @@ const styles = StyleSheet.create({
         color: "#333333",
         marginBottom: 5
     }
-});
+})
 
-const HomeScreen = props => {
-    const { navigate } = props.navigation;
+export default class HomeScreen  extends Component {
+    state = {value: ''}
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.welcome}>
-                Le TEST mon BRO
-            </Text>
-            <Button
-                onPress={() => navigate("Profile")}
-                title="Go to Profile"
-            />
-        </View>
-    );
-};
+    async componentDidMount() {
+        const apiRes = await restGet('/users')
+        this.setState({value: apiRes.title})
+    }
 
-export default HomeScreen;
+    render() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.welcome}>
+                    Here is the data from the API => {this.state.value}
+                </Text>
+                <Button
+                    onPress={() => this.props.navigation.navigate("Profile")}
+                    title="Go to Profile"
+                />
+            </View>
+        )
+    }
+}
